@@ -32,11 +32,18 @@
               type="info"
               :underline="false"
             >Forgot Password ?</el-link>
+            <!-- <div class="changcolor">
 
-            <el-button
-              type="text"
+              <el-button
+                type="text"
+                @click="changeLogin"
+              >{{loginShow}}</el-button>
+
+            </div> -->
+            <el-link
               @click="changeLogin"
-            >{{loginShow}}</el-button>
+              :underline="false"
+            >{{loginShow}}</el-link>
 
           </div>
 
@@ -55,6 +62,9 @@
 <script>
 import * as THREE from 'three'
 import BIRDS from 'vanta/src/vanta.clouds.js'
+
+
+
 export default {
 
 
@@ -137,16 +147,17 @@ export default {
       el: this.$refs.vantaRef,
       THREE: THREE
     })
-    VANTA.BIRDS({
-      el: "#your-element-selector",
-      mouseControls: true,
-      touchControls: true,
-      gyroControls: false,
-      minHeight: 200.00,
-      minWidth: 200.00,
-      scale: 1.00,
-      scaleMobile: 1.00
-    })
+    // VANTA.BIRDS({
+    //   el: "#your-element-selector",
+    //   mouseControls: true,
+    //   touchControls: true,
+    //   gyroControls: false,
+    //   minHeight: 200.00,
+    //   minWidth: 200.00,
+    //   scale: 1.00,
+    //   scaleMobile: 1.00
+    // })
+
   },
 
   beforeDestroy () {
@@ -245,7 +256,7 @@ form {
 }
 
 h2 {
-  color: #8f8f8f;
+  color: #97b4bd;
   font-weight: 500;
   text-align: center;
   letter-spacing: 0.1em;
@@ -265,7 +276,7 @@ h2 {
   outline: none;
   box-shadow: none;
   border: none;
-  color: #23242a;
+  color: #596865;
   font-size: 1em;
   letter-spacing: 0.05em;
   transition: 0.5s;
@@ -278,14 +289,14 @@ h2 {
   padding: 20px 0px 10px;
   pointer-events: none;
   font-size: 1em;
-  color: #8f8f8f;
+  color: #97b4bd;
   letter-spacing: 0.05em;
   transition: 0.5s;
 }
 
 .inputBox input:valid ~ span,
 .inputBox input:focus ~ span {
-  color: #8f8f8f;
+  color: #97b4bd;
 
   transform: translateX(0px) translateY(-34px);
   font-size: 0.75em;
@@ -298,7 +309,7 @@ h2 {
   width: 100%;
   height: 2px;
   /* background: #45f3ff; */
-  background: #8f8f8f;
+  background: #97b4bd;
   border-radius: 4px;
   overflow: hidden;
   transition: 0.5s;
@@ -318,14 +329,14 @@ h2 {
 
 .links a {
   margin: 10px 0;
-  font-size: 0.75em;
-  color: #8f8f8f;
+  font-size: 0.85em;
+  color: #97b4bd;
   text-decoration: beige;
 }
 
 .links a:hover,
 .links a:nth-child(2) {
-  color: #45f3ff;
+  color: #97b4bd;
 }
 
 input[type="submit"] {
@@ -346,4 +357,7 @@ input[type="submit"]:active {
 .sub {
   margin-top: 30px;
 }
+/* .changcolor el-button span {
+  text-decoration-color: #97b4bd !important;
+} */
 </style>

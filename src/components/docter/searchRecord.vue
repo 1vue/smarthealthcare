@@ -74,12 +74,14 @@
                 @close="dialogVisibleClose"
               >
                 <el-form
+                  id="printRecord"
                   :model="addHistory"
                   :rules="addHistoryRule"
                   ref="addHistoryRef"
                   label-width="100px"
                   style="margin-top: 8px;"
                 >
+                  <h2>患者病历信息</h2>
                   <el-form-item
                     label="患者姓名"
                     prop="patientName"
@@ -107,7 +109,8 @@
                   slot="footer"
                   class="dialog-footer"
                 >
-                  <el-button @click="dialogVisible = false">取 消</el-button>
+                  <el-button v-print="'#printRecord'">打印病历</el-button>
+                  <!-- <el-button @click="dialogVisible = false">取 消</el-button> -->
                   <el-button
                     type="primary"
                     @click="add"
@@ -316,5 +319,9 @@ export default {
 .data {
   display: flex;
   justify-content: center;
+}
+#printRecord h2 {
+  margin: 16px;
+  text-align: center; /* Center the title */
 }
 </style>
