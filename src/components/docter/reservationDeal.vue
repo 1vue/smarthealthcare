@@ -66,7 +66,7 @@
           </el-form>
         </div>
 
-        <div>
+        <div class="data">
           <el-table
             :data="reservationData"
             stripe
@@ -116,6 +116,21 @@
           </el-table>
         </div>
 
+        <div class="page">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            background
+            layout=" prev, pager, next"
+            :page-sizes="[5,6,7]"
+            :page-size.sync="pageSize"
+            :current-page.sync="currentPage"
+            :total="total"
+          >
+          </el-pagination>
+
+        </div>
+
       </div>
 
     </el-card>
@@ -127,6 +142,13 @@
 export default {
   data () {
     return {
+
+      count: 0,
+      total: 100,
+
+      currentPage: 1,
+      pageSize: 5,
+
 
       searchForm: {
         patientName: '',
@@ -158,6 +180,10 @@ export default {
       this.$http({
         url: '/docter/getReservation',
         method: "post",
+        params: {
+          pageSize: this.pageSize,
+          currentPage: this.currentPage
+        },
         headers: {
           token: window.sessionStorage.getItem('token'),
           "Content-Type": "multipart/form-data",
@@ -166,17 +192,20 @@ export default {
 
       }).then((res) => {
         console.log(res);
-        this.reservationData = res.data.data;
-
+        this.reservationData = res.data.data.table;
+        this.total = res.data.data.total;
         for (let index = 0; index < this.reservationData.length; index++) {
           this.reservationData[index].startTime = this.reservationData[index].startTime.replace('T', ' ')
           this.reservationData[index].endTime = this.reservationData[index].endTime.replace('T', ' ')
         }
 
 
-        if (res.data.code === 1)
-          this.$message.success('查询成功,共查询到' + this.reservationData.length + '条数据')
-
+        if (res.data.code === 1) {
+          if (this.count == 0) {
+            this.$message.success('查询成功,共查询到' + this.total + '条数据')
+            this.count++;
+          }
+        }
 
       })
 
@@ -270,7 +299,18 @@ export default {
       });
     },
 
+    handleSizeChange (size) {
+      this.$message.success("一页大小改变为：" + this.pageSize);
+      this.search();
+    },
 
+    handleCurrentChange (currentPage) {
+
+
+      this.$message.success("页码数改变为" + this.currentPage);
+      this.search();
+
+    },
 
   },
 
@@ -289,7 +329,7 @@ export default {
 
 
 
-<style scoped>
+<style scoped lang="less">
 .box-card {
   margin-top: 20px;
   height: 650px;
@@ -297,9 +337,20 @@ export default {
 .find {
   display: flex;
   flex-direction: column;
+  .data {
+    height: 400px;
+  }
 }
 .search {
   display: flex;
   flex-direction: row;
+}
+
+.page {
+  // margin-top: 10px;
+  // text-align: center;
+  .el-pagination {
+    margin-left: 400px;
+  }
 }
 </style>

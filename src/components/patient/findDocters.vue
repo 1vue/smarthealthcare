@@ -31,6 +31,10 @@
                 placeholder="请选择性别"
               >
                 <el-option
+                  label="全部"
+                  value=""
+                ></el-option>
+                <el-option
                   label="男"
                   value="男"
                 ></el-option>
@@ -70,6 +74,7 @@
         </div>
 
         <div class="data">
+
           <el-table
             :data="docterData"
             stripe
@@ -177,6 +182,22 @@
             </el-table-column>
 
           </el-table>
+
+        </div>
+
+        <div class="page">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            background
+            layout=" prev, pager, next"
+            :page-sizes="[5,6,7]"
+            :page-size.sync="pageSize"
+            :current-page.sync="currentPage"
+            :total="total"
+          >
+          </el-pagination>
+
         </div>
 
       </div>
@@ -190,6 +211,12 @@
 export default {
   data () {
     return {
+
+      count: 0,
+      total: 100,
+
+      currentPage: 1,
+      pageSize: 5,
 
       searchForm: {
         name: '',
@@ -232,6 +259,11 @@ export default {
       this.$http({
         url: '/patient/findDocter',
         method: "post",
+
+        params: {
+          pageSize: this.pageSize,
+          currentPage: this.currentPage
+        },
         headers: {
           token: window.sessionStorage.getItem('token'),
           "Content-Type": "multipart/form-data",
@@ -240,13 +272,16 @@ export default {
 
       }).then((res) => {
         console.log(res);
-        this.docterData = res.data.data;
+        this.docterData = res.data.data.table;
+        this.total = res.data.data.total;
 
 
-
-        if (res.data.code === 1)
-          this.$message.success('查询成功,共查询到' + this.docterData.length + '条数据')
-
+        if (res.data.code === 1) {
+          if (this.count == 0) {
+            this.$message.success('查询成功,共查询到' + this.total + '条数据')
+            this.count++;
+          }
+        }
 
       })
 
@@ -288,8 +323,19 @@ export default {
 
 
       })
-    }
+    },
+    handleSizeChange (size) {
+      this.$message.success("一页大小改变为：" + this.pageSize);
+      this.search();
+    },
 
+    handleCurrentChange (currentPage) {
+
+
+      this.$message.success("页码数改变为" + this.currentPage);
+      this.search();
+
+    },
   },
 
   mounted () {
@@ -307,7 +353,7 @@ export default {
 
 
 
-<style scoped>
+<style scoped lang="less">
 .box-card {
   margin-top: 20px;
   height: 650px;
@@ -315,9 +361,20 @@ export default {
 .find {
   display: flex;
   flex-direction: column;
+  .data {
+    height: 400px;
+  }
 }
 .search {
   display: flex;
   flex-direction: row;
+}
+
+.page {
+  // margin-top: 10px;
+  // text-align: center;
+  .el-pagination {
+    margin-left: 400px;
+  }
 }
 </style>

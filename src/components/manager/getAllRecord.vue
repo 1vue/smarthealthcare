@@ -105,6 +105,21 @@
           </el-table>
         </div>
 
+        <div class="page">
+          <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            background
+            layout=" prev, pager, next"
+            :page-sizes="[5,6,7]"
+            :page-size.sync="pageSize"
+            :current-page.sync="currentPage"
+            :total="total"
+          >
+          </el-pagination>
+
+        </div>
+
       </div>
 
     </el-card>
@@ -113,10 +128,18 @@
 </template>
 
 <script>
+import { log } from 'three'
 export default {
   data () {
     return {
       dialogVisible: false,
+
+      count: 0,
+      total: 100,
+
+      currentPage: 1,
+      pageSize: 5,
+
 
       searchForm: {
         patientName: '',
@@ -151,6 +174,10 @@ export default {
       this.$http({
         url: '/manage/getAllRecord',
         method: "post",
+        params: {
+          pageSize: this.pageSize,
+          currentPage: this.currentPage
+        },
         headers: {
           token: window.sessionStorage.getItem('token'),
           "Content-Type": "multipart/form-data",
@@ -158,25 +185,42 @@ export default {
         data: formdata,
 
       }).then((res) => {
-        console.log(res);
-        this.historyData = res.data.data;
+        // console.log(res);
+        this.historyData = res.data.data.table;
+        this.total = res.data.data.total;
+
+        console.log(this.historyData);
 
         for (let index = 0; index < this.historyData.length; index++) {
+
           this.historyData[index].time = this.historyData[index].time.replace('T', ' ')
 
         }
 
-        if (res.data.code === 1)
-          this.$message.success('查询成功,共查询到' + this.historyData.length + '条数据')
-
-
+        if (res.data.code === 1) {
+          if (this.count == 0) {
+            this.$message.success('查询成功,共查询到' + this.total + '条数据')
+            this.count++;
+          }
+        }
       })
 
 
 
     },
 
+    handleSizeChange (size) {
+      this.$message.success("一页大小改变为：" + this.pageSize);
+      this.search();
+    },
 
+    handleCurrentChange (currentPage) {
+
+
+      this.$message.success("页码数改变为" + this.currentPage);
+      this.search();
+
+    },
 
 
 
@@ -190,26 +234,30 @@ export default {
 }
 </script>
 
-<style scoped>
+
+<style scoped lang="less">
 .box-card {
   margin-top: 20px;
+  height: 650px;
 }
-
 .find {
   display: flex;
   flex-direction: column;
+  .data {
+    height: 400px;
+  }
 }
-
 .search {
   display: flex;
   flex-direction: row;
 }
-.el-table {
-  margin-left: 20px;
-}
-.data {
-  display: flex;
-  justify-content: center;
+
+.page {
+  // margin-top: 10px;
+  // text-align: center;
+  .el-pagination {
+    margin-left: 400px;
+  }
 }
 .el-input {
   width: 180px;
