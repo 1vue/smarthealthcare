@@ -351,7 +351,7 @@ export default {
   }
 }
 .search {
-  width: 500px;
+  // width: 500px;
   display: flex;
   flex-direction: row;
 }
