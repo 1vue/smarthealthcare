@@ -72,7 +72,7 @@
               placement="top-start"
             >
               <el-button
-                style="margin-left: 200px;"
+                style="margin-left: 66px;"
                 type="primary"
                 @click="dialogVisible = true"
               >新增患者</el-button>

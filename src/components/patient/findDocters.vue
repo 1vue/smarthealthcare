@@ -296,33 +296,104 @@ export default {
 
 
     reservation () {
+      const workingHoursStart = 8; // 上班时间8点
+      const workingHoursEnd = 17; // 下班时间17点
       let formdata = new FormData()
       for (let key in this.reservationTime) {
         formdata.append(key, this.reservationTime[key])
       }
 
+
       console.log(this.reservationTime);
-      this.$http({
-        url: '/patient/reservation',
-        method: "put",
-        headers: {
-          token: window.sessionStorage.getItem('token'),
-          "Content-Type": "multipart/form-data",
-        },
-        data: formdata,
-
-      }).then((res) => {
-        console.log(res);
 
 
-        if (res.data.code == 0) { this.$message.error("预约失败") }
-        else {
-          this.$message.success("预约成功")
-          this.dialogVisible = false;
+      let time1 = new Date(this.reservationTime.startTime)
+
+      let time2 = new Date(this.reservationTime.endTime)
+
+      let hour1 = time1.getHours();
+      let hour2 = time2.getHours();
+
+      if (time2 > time1) {
+        let hourDifference = (time2 - time1) / (1000 * 60 * 60);
+
+        if (hourDifference <= 3) {
+
+          if (hour1 >= workingHoursStart && hour2 <= workingHoursEnd) {
+            this.$http({
+              url: '/patient/reservation',
+              method: "put",
+              headers: {
+                token: window.sessionStorage.getItem('token'),
+                "Content-Type": "multipart/form-data",
+              },
+              data: formdata,
+
+            }).then((res) => {
+              console.log(res);
+
+
+              if (res.data.code == 0) { this.$message.error("预约失败") }
+              else {
+
+                this.dialogVisible = false;
+              }
+
+
+            })
+
+
+            this.$notify({
+              title: '成功',
+              message: '预约成功，请按时前往诊治',
+              type: 'success'
+            });
+
+
+          }
+          else {
+            this.$alert('您当前预约的时间不在医院工作时间内，请重新选择', '温馨提示', {
+              confirmButtonText: '确定',
+              callback: action => {
+
+                this.reservationTime.startTime = ''
+                this.reservationTime.endTime = ''
+              }
+            });
+          }
+
+
+
         }
+        else {
+
+          this.$alert('预约时间过长，请重新选择时间', '温馨提示', {
+            confirmButtonText: '确定',
+            callback: action => {
+
+              this.reservationTime.startTime = ''
+              this.reservationTime.endTime = ''
+            }
+          });
+        }
+      }
+      else {
+
+        this.$alert('预约时间输入有误，请重新输入', '温馨提示', {
+          confirmButtonText: '确定',
+          callback: action => {
+
+            this.reservationTime.startTime = ''
+            this.reservationTime.endTime = ''
+          }
+        });
 
 
-      })
+
+
+      }
+
+
     },
     handleSizeChange (size) {
       this.$message.success("一页大小改变为：" + this.pageSize);

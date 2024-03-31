@@ -85,7 +85,7 @@
               placement="top-start"
             >
               <el-button
-                style="margin-left: 10px;"
+                style="margin-left: 4px;"
                 @click="dialogVisible = true"
                 type="primary"
               >新增医生</el-button>

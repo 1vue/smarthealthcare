@@ -61,7 +61,7 @@
                 placement="top-start"
               >
                 <el-button
-                  style="margin-left: 180px;"
+                  style="margin-left: 66px;"
                   @click="dialogVisible = true"
                   type="primary"
                 >新增病历</el-button>
@@ -351,6 +351,7 @@ export default {
   }
 }
 .search {
+  width: 500px;
   display: flex;
   flex-direction: row;
 }
